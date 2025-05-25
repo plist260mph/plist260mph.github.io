@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPH Toolkit - The Future of Unity Game Modding</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg-color: #0a0a0a;      /* Deep black */
+            --secondary-bg-color: #121212;    
+            --card-bg-color: #181818;         
+            --text-color: #ededed;            
+            --text-secondary-color: #a0a0a0;  
+            
+            --accent-color: #587058;          /* Your DPH green */
+            --accent-hover-color: #6e8d6e;     
+            --accent-glow-color: rgba(88, 112, 88, 0.6); 
+            --accent-glow-strong: rgba(88, 112, 88, 0.8);
+            
+            --logo-text-color: #ffffff;       
+            --cta-text-color: #ffffff;        
+
+            --border-color: #2a2a2a;          
+            --shadow-color-strong: rgba(0, 0, 0, 0.6);
+            --shadow-color-medium: rgba(0, 0, 0, 0.35);
+            --shadow-color-light: rgba(0, 0, 0, 0.2);
+
+            --nav-height: 80px; /* Increased for larger logo */
+            --container-width: 1200px; 
+            --border-radius: 14px; 
+        }
+
+        /* --- Base Animations --- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes scaleUp {
+            from { transform: scale(0.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        @keyframes pulseGlow { /* For CTAs */
+            0% { box-shadow: 0 0 15px 0px var(--accent-glow-color); }
+            50% { box-shadow: 0 0 25px 8px var(--accent-glow-color); }
+            100% { box-shadow: 0 0 15px 0px var(--accent-glow-color); }
+        }
+        @keyframes heroTextGlow {
+            0% { text-shadow: 0 0 10px var(--accent-glow-color), 0 0 20px rgba(255,255,255,0.1); }
+            50% { text-shadow: 0 0 25px var(--accent-glow-strong), 0 0 40px rgba(255,255,255,0.2); }
+            100% { text-shadow: 0 0 10px var(--accent-glow-color), 0 0 20px rgba(255,255,255,0.1); }
+        }
+
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--primary-bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden; 
+        }
+
+        #particles-js { /* SETUP AS PER PREVIOUS INSTRUCTIONS */
+            position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: -1; 
+            background-color: var(--primary-bg-color);
+        }
+
+        .container { width: 90%; max-width: var(--container-width); margin: 0 auto; padding: 0 20px; position: relative; z-index: 1;}
+
+        header {
+            background-color: rgba(10, 10, 10, 0.65); 
+            backdrop-filter: blur(15px); 
+            height: var(--nav-height); display: flex; align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            box-shadow: 0 5px 25px var(--shadow-color-medium);
+            animation: fadeInDown 1s 0.1s ease-out forwards; opacity:0;
+        }
+        header nav { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        header .logo { display: flex; align-items: center; text-decoration: none; animation: fadeInLeft 0.8s 0.5s ease-out forwards; opacity:0; }
+        header .logo img { 
+            height: 48px; /* Increased logo size */
+            width: auto; 
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        header .logo:hover img { transform: rotate(-10deg) scale(1.10); } /* Subtle hover */
+        /* Removed text span for DPH Toolkit next to logo */
+        
+        header ul { list-style: none; display: flex; align-items: center; animation: fadeInRight 0.8s 0.5s ease-out forwards; opacity:0; }
+        header ul li { margin-left: 38px; }
+        header ul li a {
+            text-decoration: none; color: var(--text-secondary-color); font-weight: 500; font-size: 0.95em;
+            transition: color 0.3s ease, transform 0.3s ease; position: relative; padding: 8px 0;
+        }
+        header ul li a::before, header ul li a::after {
+            content: ''; position: absolute; width: 0; height: 2px; background-color: var(--accent-color);
+            transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        header ul li a::before { top: 0; left: 50%; transform: translateX(-50%);}
+        header ul li a::after { bottom: 0; right: 50%; transform: translateX(50%);}
+        header ul li a:hover::before, header ul li a:hover::after { width: 60%; }
+        header ul li a:hover { color: var(--accent-color); transform: translateY(-2px); }
+
+        .nav-cta { 
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover-color));
+            color: var(--cta-text-color) !important; padding: 12px 28px;
+            border-radius: var(--border-radius); font-weight: 600; font-size: 0.9em;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 15px 0px transparent; border: none;
+        }
+        .nav-cta:hover {
+            transform: translateY(-3px) scale(1.08);
+            box-shadow: 0 8px 25px var(--accent-glow-strong);
+        }
+
+        main { padding-top: var(--nav-height); }
+
+        section { padding: 90px 0; position: relative; overflow: hidden; }
+        .section-animated { opacity: 0; animation: fadeInUp 1s 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
+
+        .hero {
+            min-height: calc(100vh - var(--nav-height)); /* Adjusted for nav height */
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 40px 0; 
+            opacity:0; animation: fadeIn 1.5s 0.3s ease-out forwards; 
+            position:relative;
+        }
+        .hero::before { 
+            content: ""; position:absolute; top:0; left:0; width:100%; height:200px;
+            background: linear-gradient(to bottom, rgba(10,10,10,0.5), transparent);
+            z-index: 0;
+        }
+
+        .hero .container { opacity:0; animation: fadeInUp 1.2s 0.7s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
+        .hero h1 {
+            font-size: clamp(3em, 7vw, 5.5em); 
+            color: var(--text-color); margin-bottom: 25px; font-weight: 800; letter-spacing: -2px;
+            animation: heroTextGlow 3s ease-in-out infinite, fadeInUp 1s 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+            opacity: 0;
+        }
+        .hero .tagline {
+            font-size: clamp(1.1em, 2.5vw, 1.6em); 
+            color: var(--text-secondary-color); margin-bottom: 50px; max-width: 800px;
+            margin-left: auto; margin-right: auto; line-height: 1.8; font-weight: 400;
+            opacity:0; animation: fadeInUp 1s 1.3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+        .hero .cta-button {
+            opacity:0; animation: scaleUp 1s 1.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        .cta-button { 
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover-color) 100%);
+            color: var(--cta-text-color); padding: 20px 50px; font-size: 1.15em; 
+            text-decoration: none; border-radius: var(--border-radius);
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 700; box-shadow: 0 5px 20px var(--accent-glow-color);
+            letter-spacing: 0.8px; border:none; text-transform: uppercase;
+        }
+        .cta-button:hover {
+            transform: translateY(-6px) scale(1.08);
+            box-shadow: 0 12px 35px var(--accent-glow-strong);
+        }
+        
+        .section-heading { text-align: center; margin-bottom: 75px; }
+        .section-heading h2 {
+            font-size: clamp(2.4em, 5vw, 3.5em); color: var(--text-color); font-weight: 700;
+            margin-bottom: 15px; position: relative; display: inline-block;
+            opacity:0; animation: fadeInUp 0.8s 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+         .section-heading h2::after { 
+            content: ''; display: block; width: 0%; height: 4px;
+            background: var(--accent-color); margin: 15px auto 0; border-radius: 2px;
+            animation: expandWidth 1s 0.7s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+        @keyframes expandWidth { from { width:0%; } to { width: 80%;}}
+        .section-heading p { 
+            font-size: clamp(1em, 2vw, 1.25em); color: var(--text-secondary-color);
+            max-width: 750px; margin: 0 auto; line-height: 1.7;
+             opacity:0; animation: fadeInUp 0.8s 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+        
+        .features-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 45px;
+        }
+        /* Generic Card Styles */
+        .feature-item, .paid-feature-item {
+            background-color: var(--card-bg-color); padding: 40px 35px;
+            border-radius: var(--border-radius); border: 1px solid var(--border-color); 
+            box-shadow: 0 12px 35px var(--shadow-color-light);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+            opacity:0; animation: scaleUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+            position: relative; overflow: hidden;
+            display: flex; 
+            flex-direction: column; 
+        }
+        /* Staggered animation for items in a grid */
+        .features-grid .feature-item:nth-child(1), .paid-features-grid .paid-feature-item:nth-child(1) { animation-delay: 0.3s; }
+        .features-grid .feature-item:nth-child(2), .paid-features-grid .paid-feature-item:nth-child(2) { animation-delay: 0.45s; }
+        .features-grid .feature-item:nth-child(3) { animation-delay: 0.6s; }
+        .features-grid .feature-item:nth-child(4) { animation-delay: 0.75s; }
+
+
+        .feature-item::before, .paid-feature-item::before { 
+            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, var(--accent-glow-color) 0%, transparent 60%);
+            transform: scale(0); transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index:0; opacity: 0.5;
+        }
+        .feature-item:hover::before, .paid-feature-item:hover::before { transform: scale(1); }
+
+        .feature-item:hover, .paid-feature-item:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 50px var(--shadow-color-medium);
+            border-color: var(--accent-color);
+        }
+        .feature-item > *, .paid-feature-item > * { position:relative; z-index: 1;}
+
+
+        .feature-icon { 
+            font-size: 3em; color: var(--accent-color); margin-bottom: 25px; display: inline-block;
+            transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.3s ease;
+            text-shadow: 0 0 10px var(--accent-glow-color);
+        }
+        .feature-item:hover .feature-icon { transform: translateY(-5px) scale(1.2) rotate(10deg); color:var(--accent-hover-color);}
+
+        .feature-item h3 {
+            font-size: 1.5em; color: var(--text-color); margin-bottom: 15px; font-weight: 600;
+        }
+        .feature-item p {
+            color: var(--text-secondary-color); font-size: 0.95em; line-height: 1.8;
+        }
+
+        /* Pricing Section Specifics */
+        .paid-features-grid {
+            display: flex; /* Changed to flex for two items */
+            justify-content: center; /* Center the two items */
+            gap: 45px;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+        .paid-feature-item {
+            width: calc(50% - 22.5px); /* Two items with gap */
+            max-width: 420px; /* Max width for each card */
+        }
+        .paid-feature-item h3 { font-size: 1.5em; color: var(--text-color); margin-bottom: 15px; font-weight: 600;}
+        .paid-feature-item p { color: var(--text-secondary-color); font-size: 0.95em; line-height: 1.8;}
+        .paid-feature-item ul { list-style: none; padding-left: 0; margin-top: 18px; margin-bottom:auto; flex-grow: 1; /* Fill space to push button down */ }
+        .paid-feature-item ul li { padding-left: 28px; position: relative; margin-bottom: 10px; }
+        .paid-feature-item ul li::before { 
+            content: '✓'; color: var(--accent-color); position: absolute; left: 0; font-weight: bold; font-size: 1.1em;
+            text-shadow: 0 0 5px var(--accent-glow-color);
+        }
+        .paid-feature-item .price {
+            font-size: 2em; font-weight: 700; color: var(--accent-color); margin: 25px 0;
+        }
+        .paid-feature-item .price span { font-size: 0.6em; font-weight: 400; color: var(--text-secondary-color); }
+        
+        .paid-feature-item .cta-button { 
+            padding: 14px 20px; 
+            font-size: 0.95em; 
+            margin-top: auto; /* Pushes button to bottom */
+            width: auto; /* Let it size to content + padding */
+            min-width: 180px; /* Minimum touch target */
+            max-width: 90%;
+            display: block; 
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        /* Coming Soon Overlay for Pro Card */
+        .pro-version-card.coming-soon-overlay {
+            position: relative;
+            border-color: var(--accent-color) !important; /* Keep highlight if desired */
+        }
+        .pro-version-card.coming-soon-overlay > *:not(.coming-soon-text) { /* Desaturate content behind */
+            filter: grayscale(70%) opacity(0.5);
+        }
+        .coming-soon-text {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(24, 24, 24, 0.85); /* Dark semi-transparent overlay */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 2; /* Above other card content but below card's hover effects if any */
+            border-radius: var(--border-radius); /* Match parent card */
+        }
+        .coming-soon-text h4 {
+            font-size: 2.2em;
+            color: var(--accent-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px var(--accent-glow-color);
+        }
+         .coming-soon-text p {
+            font-size: 1em;
+            color: var(--text-secondary-color);
+        }
+        .pro-version-card.coming-soon-overlay .cta-button { /* Style disabled/coming soon button */
+            background: var(--border-color);
+            color: var(--text-secondary-color);
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+        .pro-version-card.coming-soon-overlay .cta-button:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        
+        .detailed-item {
+            display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 70px; margin-bottom: 90px;
+            opacity:0; animation: fadeInUp 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+        .detailed-item:nth-child(odd) { animation-delay: 0.3s; }
+        .detailed-item:nth-child(even) { animation-delay: 0.45s; }
+        .detailed-item.reverse .detailed-image-placeholder { grid-column: 2 / 3; grid-row: 1; }
+        .detailed-item.reverse .detailed-content { grid-column: 1 / 2; grid-row: 1; text-align: right;}
+        .detailed-item .detailed-content { text-align: left; }
+
+        .detailed-image-placeholder {
+            min-height: 380px; background-color: var(--card-bg-color); border-radius: var(--border-radius);
+            display: flex; align-items: center; justify-content: center; color: #666;
+            font-style: italic; font-size: 1.2em; border: 1px solid var(--border-color);
+            transition: transform 0.6s cubic-bezier(0.075, 0.82, 0.165, 1), box-shadow 0.6s ease;
+            overflow: hidden; box-shadow: 0 10px 30px var(--shadow-color-light);
+        }
+        .detailed-item:hover .detailed-image-placeholder {
+            transform: scale(1.05) rotate(1deg); box-shadow: 0 15px 50px var(--shadow-color-medium);
+        }
+        .detailed-content h3 {
+            font-size: clamp(1.9em, 4vw, 2.7em); color: var(--text-color); margin-bottom: 22px; font-weight: 700;
+        }
+        .detailed-content p { margin-bottom: 28px; color: var(--text-secondary-color); font-size: 1.05em; line-height: 1.9;}
+
+        .learn-more { 
+            display: inline-block; color: var(--cta-text-color); text-decoration: none;
+            font-weight: 600; background: var(--accent-color);
+            border: none; padding: 14px 32px;
+            border-radius: var(--border-radius);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size: 0.95em;
+            box-shadow: 0 4px 15px var(--accent-glow-color);
+        }
+        .learn-more:hover {
+            background: var(--accent-hover-color); transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 8px 25px var(--accent-glow-strong);
+        }
+
+        .trust-qualities-container { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px; text-align: center;
+        }
+        .quality-item {
+            background-color: transparent; padding: 25px 15px;
+            opacity:0; animation: scaleUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+         .quality-item:nth-child(1) { animation-delay: 0.4s; }
+         .quality-item:nth-child(2) { animation-delay: 0.55s; }
+         .quality-item:nth-child(3) { animation-delay: 0.7s; }
+
+        .quality-icon { 
+            font-size: 3.2em; color: var(--accent-color); margin-bottom: 25px; display: inline-block;
+            transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1), filter 0.3s ease;
+             filter: drop-shadow(0 0 8px var(--accent-glow-color));
+        }
+        .quality-item:hover .quality-icon { transform: translateY(-10px) scale(1.25) rotate(8deg); filter: drop-shadow(0 0 15px var(--accent-glow-strong));}
+        .quality-item h3 { font-size: 1.4em; color: var(--text-color); margin-bottom: 12px; font-weight: 600; }
+        .quality-item p { color: var(--text-secondary-color); font-size: 0.9em; }
+        
+        #download.final-cta { 
+            background: linear-gradient(to bottom, var(--secondary-bg-color), var(--primary-bg-color)); 
+            padding: 120px 0; 
+            text-align: center;
+            border-top: 2px solid var(--accent-color);
+            box-shadow: 0 -10px 30px -5px var(--accent-glow-color) inset;
+        }
+        #download .section-heading h2 { color: var(--text-color); animation: none; opacity: 1;} 
+        #download .section-heading p {
+            font-size: clamp(1.2em, 2.5vw, 1.5em);
+            color: var(--text-color); 
+            margin-bottom: 50px;
+            max-width: 800px;
+             animation: none; opacity: 1; 
+        }
+        #download .cta-button { 
+            padding: 22px 60px;
+            font-size: 1.3em;
+            animation: pulseGlow 2.5s infinite ease-in-out, scaleUp 1s 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+            opacity: 0;
+        }
+         #download .button-subtext {
+            display: block;
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: var(--text-secondary-color);
+        }
+
+
+        footer {
+            background-color: var(--primary-bg-color); color: var(--text-secondary-color);
+            padding: 70px 0 50px; text-align: center; font-size: 0.9em;
+            border-top: 1px solid var(--border-color);
+            opacity:0; animation: fadeIn 1.2s 0.5s ease-out forwards;
+        }
+        footer p { margin-bottom: 12px; }
+        footer a { color: var(--text-secondary-color); text-decoration: none; margin: 0 15px; transition: color 0.3s ease, text-shadow 0.3s ease; }
+        footer a:hover { color: var(--accent-color); text-shadow: 0 0 5px var(--accent-glow-color);}
+
+
+        @media (max-width: 992px) { /* Tablet and smaller */
+            .detailed-item, .detailed-item.reverse { grid-template-columns: 1fr; text-align: center !important; }
+            .detailed-item.reverse .detailed-image-placeholder, .detailed-item .detailed-image-placeholder { grid-column: 1 / 2; }
+            .detailed-item .detailed-content, .detailed-item.reverse .detailed-content { text-align: center; }
+            header ul li { margin-left: 25px; }
+            .paid-features-grid { flex-direction: column; align-items: center;} /* Stack pricing cards and center */
+            .paid-feature-item { width: 100%; max-width: 450px; /* Allow them to be wider when stacked */ }
+        }
+        @media (max-width: 768px) { /* Mobile */
+            header { padding: 0 15px; }
+            header nav ul { display: none; } 
+            header .logo img { height: 40px; } /* Slightly smaller logo for mobile nav */
+            .nav-cta { margin-left: auto; padding: 10px 22px; font-size: 0.85em;}
+
+            section { padding: 70px 0; }
+            .features-grid, .trust-qualities-container { gap: 30px; }
+        }
+
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div> <!-- PARTICLES.JS BACKGROUND TARGET -->
+
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <img src="dph_logo.png" alt="DPH Toolkit Logo"> <!-- Ensure dph_logo.png is present -->
+                <!-- Text removed from here -->
+            </a>
+            <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#showcase">Showcase</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="YOUR_DISCORD_LINK_HERE" target="_blank">Discord</a>
+                <li><a href="#download" class="nav-cta">Get Toolkit</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>DPH Toolkit: EVOLVED</h1>
+                <p class="tagline">Experience the pinnacle of Unity Game Modding asset & metadata manipulation. DPH Toolkit merges raw power with an artfully crafted intuitive experience for modders of all levels.</p>
+                <a href="#download" class="cta-button">Get Started Now</a>
+            </div>
+        </section>
+
+        <section id="features" class="section-animated">
+            <div class="container">
+                <div class="section-heading">
+                    <h2>Unrivaled Capabilities</h2>
+                    <p>DPH Toolkit isn't just an upgrade, it's a revolution in how you interact with Unity game assets.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">⚡️</div> 
+                        <h3>Quantum Edit Speeds</h3>
+                        <p>Navigate and modify vast metadata structures with near-instantaneous response times. </p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🧬</div> 
+                        <h3>Deep Asset Integration</h3>
+                        <p>A symbiotic relationship with Unity's asset system, unlocking advanced functionalities and workflows for your modding projects.</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🎨</div> 
+                        <h3>Mastercrafted UI/UX</h3>
+                        <p>An interface that balances extreme power with elegant simplicity, making complexity manageable for all Unity Game Modding tasks.</p>
+                    </div>
+                     <div class="feature-item">
+                        <div class="feature-icon">⚙️</div>
+                        <h3>Titan Batch Engine</h3>
+                        <p>Execute intricate, large-scale operations across numerous game files with our robust automation suite.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="showcase" class="section-animated" style="background-color: var(--secondary-bg-color);">
+            <div class="container">
+                 <div class="section-heading">
+                    <h2>Visualize the Evolution</h2>
+                    <p>Witness firsthand how DPH Toolkit elevates your Unity Game Modding projects from tedious tasks to creative endeavors.</p>
+                </div>
+                <div class="detailed-item">
+                    <div class="detailed-image-placeholder">[Immersive GIF/Video: DPH Toolkit fluidly navigating and editing a complex game asset, highlighting UI elements]</div>
+                    <div class="detailed-content">
+                        <h3>The Modder's Cockpit</h3>
+                        <p>Our redesigned visual editor acts as your central command. Inspect, visualize, and manipulate intricate game asset structures with an unparalleled combination of speed, precision, and intuitive design for effective Unity Game Modding.</p>
+                        <a href="#your-interface-deep-dive" class="learn-more">Explore the Interface</a>
+                    </div>
+                </div>
+                <div class="detailed-item reverse">
+                     <div class="detailed-image-placeholder">[Immersive GIF/Video: The batch scripting tool executing a complex multi-file operation with visual feedback for game assets]</div>
+                    <div class="detailed-content">
+                        <h3>True Automation Power</h3>
+                        <p>Leave manual drudgery behind. Leverage the advanced scripting engine or our visual batch processors for complex, multi-file operations. Efficiency in your Unity Game Modding projects is no longer a goal, it's a guarantee.</p>
+                        <a href="#your-automation-features" class="learn-more">Master Automation</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="pricing" class="section-animated">
+            <div class="container">
+                <div class="section-heading">
+                    <h2>Choose Your Toolkit</h2>
+                    <p>Start with our powerful free Community Edition, or anticipate the enhanced capabilities of DPH Toolkit Pro for peak Unity Game Modding performance.</p>
+                </div>
+                <div class="paid-features-grid">
+                    <div class="paid-feature-item">
+                        <h3>DPH Toolkit <br/><span>Community Edition</span></h3>
+                        <div class="price">Free</div>
+                        <ul>
+                            <li>Full Core Metadata Editing for Unity Games</li>
+                            <li>Standard Unity Asset Integration</li>
+                            <li>Basic Batch Operations for Modding</li>
+                            <li>Community Discord Support</li>
+                        </ul>
+                        <a href="#download" class="cta-button" style="background: var(--card-bg-color); color: var(--text-color); border: 1px solid var(--text-secondary-color);">Download Free</a>
+                    </div>
+                    <div class="paid-feature-item pro-version-card coming-soon-overlay" style="border: 2px solid var(--accent-color); transform: scale(1.03); box-shadow: 0 0 30px var(--accent-glow-color);">
+                        <div class="coming-soon-text">
+                            <h4>Coming Soon</h4>
+                            <p>Pro features are under active development!</p>
+                        </div>
+                        <h3>DPH Toolkit <br/><span>Pro Version</span></h3>
+                        <div class="price">$35 <span>/ one-time</span></div>
+                        <ul>
+                            <li>All Community Features, Plus:</li>
+                            <li>Advanced Scripting Engine & Full API</li>
+                            <li>Plugin & Extension Architecture</li>
+                            <li>Automated Asset Tree Differencing</li>
+                            <li>AI-Assisted Metadata Suggestions</li>
+                            <li>Priority Email & Discord Support</li>
+                            <li>Exclusive Pro User Themes</li>
+                        </ul>
+                        <a href="#pro-notify-link" class="cta-button">Notify Me</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="trust-qualities-section section-animated" style="background-color: var(--secondary-bg-color);">
+            <div class="container">
+                 <div class="section-heading">
+                    <h2>Engineered for Excellence in Unity Game Modding</h2>
+                    <p>DPH Toolkit is built on principles of innovation, performance, and strong community focus for all your Unity Game Modding needs.</p>
+                </div>
+                <div class="trust-qualities-container">
+                    <div class="quality-item">
+                        <div class="quality-icon">💡</div>
+                        <h3>Innovative Core</h3>
+                        <p>Cutting-edge algorithms and a forward-thinking design philosophy for effective Unity Game Modding.</p>
+                    </div>
+                    <div class="quality-item">
+                        <div class="quality-icon">📈</div>
+                        <h3>Relentless Evolution</h3>
+                        <p>Continuously updated with new features based on user needs and tech advancements in Unity Game Modding.</p>
+                    </div>
+                    <div class="quality-item">
+                        <div class="quality-icon">🫂</div>
+                        <h3>Community Focused</h3>
+                        <p>Active Discord server for support, feedback, and collaboration on all things DPH Toolkit and Unity Game Modding.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="download" class="final-cta section-animated"> 
+            <div class="container">
+                <div class="section-heading">
+                    <h2 style="font-size: clamp(2.8em, 6vw, 4em); color: var(--text-color);">Get Started with DPH Toolkit</h2>
+                    <p style="color: #ccc;">Join thousands of modders who are revolutionizing their Unity Game Modding workflow. <br/>Download the powerful Community Edition completely free, today!</p>
+                </div>
+                <a href="YOUR_FREE_DOWNLOAD_LINK_HERE" class="cta-button">Download Free Edition</a>
+                <span class="button-subtext">No registration required. Instant access.</span>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 DPH Toolkit. All Rights Reserved. Crafted for the Unity Game Modding Community.</p>
+            <p>
+                <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="YOUR_DISCORD_LINK_HERE" target="_blank">Join our Discord</a>
+            </p>
+        </div>
+    </footer>
+    
+    <!-- 
+      SCRIPTS FOR PARTICLES.JS 
+      (Uncomment and ensure files are correctly pathed as per previous instructions)
+    -->
+    <!-- <script src="path/to/particles.min.js"></script> -->
+    <!-- <script> -->
+    <!--  particlesJS.load('particles-js', 'path/to/your/particles-config.json', function() { -->
+    <!--    console.log('particles.js config loaded'); -->
+    <!--  }); -->
+    <!-- </script> -->
+
+</body>
+</html>
